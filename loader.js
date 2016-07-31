@@ -2,7 +2,7 @@ var lastDirection = defaultDirection;
 
 var game;
 window.onload = function() {
-    game = new Game(20, 30);
+    game = new Game(30, 30);
     var interval = window.setInterval(function() {
       var isDead = game.update(lastDirection);
 
@@ -11,30 +11,16 @@ window.onload = function() {
         window.clearInterval(interval);
       }
     }, 100);
-
-    // window.setTimeout(function() {
-    //   window.clearInterval(interval);
-    // }, 5000);
 }
 
 document.addEventListener('keydown', function(event) {
     if (event.keyCode == 37) {
-        console.log('Left was pressed');
         lastDirection = directions.LEFT;
-    }
-
-    else if(event.keyCode == 38) {
-        console.log('Up was pressed');
+    } else if(event.keyCode == 38) {
         lastDirection = directions.UP;
-    }
-
-    else if(event.keyCode == 39) {
-        console.log('Right was pressed');
+    } else if(event.keyCode == 39) {
         lastDirection = directions.RIGHT;
-    }
-
-    else if(event.keyCode == 40) {
-        console.log('Down was pressed');
+    } else if(event.keyCode == 40) {
         lastDirection = directions.DOWN;
     }
 });

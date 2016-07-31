@@ -1,73 +1,44 @@
 
 
-function Snake(startPosition) {
+function Snake(startPosition, startDirection) {
   this.tailLocation = startPosition;
   this.headLocation = startPosition;
-  this.limbs = [ new SnakeLimb(defaultDirection) ];
+  this.limbs = [ startPosition ];
+  this.currentDirection = startDirection;
 }
 
 Snake.prototype.getTail = function() {
   return this.limbs[0];
 }
 
-Snake.prototype.getHeadLocation = function() {
-  return this.headLocation;
+Snake.prototype.getHead = function() {
+  return this.limbs[this.limbs.length - 1];
 }
 
 Snake.prototype.getNextPixel = function(newDirection) {
-  return this.getHeadLocation().neighbor(newDirection);
+  return this.getHead().neighbor(newDirection);
+}
+
+Snake.prototype.willTouch = function(pixel) {
+  return this.limbs.slice(1).some(function(limb) {
+    return limb.equals(pixel);
+  });
 }
 
 Snake.prototype.getLimbs = function() {
   return this.limbs;
 }
 
-Snake.prototype.getHead = function() {
-  return this.limbs[this.limbs.length - 1];
-}
-
 Snake.prototype.getCurrentDirection = function() {
-  return this.getHead().getDirection();
-}
-
-Snake.prototype.getTailLocation = function() {
-  return this.tailLocation;
+  return this.currentDirection;
 }
 
 Snake.prototype.move = function(newDirection, isGrowing) {
-  var currentDirection = this.getCurrentDirection();
-
-  if (currentDirection !== newDirection) {
-    this.limbs.push(new SnakeLimb(newDirection));
-  } else {
-    this.getHead().advance();
-  }
+  this.limbs.push(this.getNextPixel(newDirection));
 
   if (!isGrowing) {
-    if (this.getTail().getLength() === 1) {
-      this.limbs.shift();
-    } else {
-      this.getTail().length -= 1;
-    }
+    this.limbs.shift();
   }
 
-  this.headLocation = this.headLocation.neighbor(newDirection)
-  this.tailLocation = this.tailLocation.neighbor(this.getTail().getDirection())
-}
-
-function SnakeLimb(direction) {
-  this.direction = direction;
-  this.length = 1;
-}
-
-SnakeLimb.prototype.getDirection = function() {
-  return this.direction;
-}
-
-SnakeLimb.prototype.getLength = function() {
-  return this.length;
-}
-
-SnakeLimb.prototype.advance = function() {
-  return this.length += 1;
+  this.currentDirection = newDirection;
 }

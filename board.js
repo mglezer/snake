@@ -34,14 +34,8 @@ Board.prototype.clear = function() {
 Board.prototype.redraw = function(snake, food) {
   this.clear();
 
-  var p = snake.getTailLocation().neighbor(oppositeDirection(snake.getTail().getDirection()));
-
-  console.log("**limbs: ", snake.getLimbs());
   snake.getLimbs().map(function(limb) {
-    var numPixels = limb.length;
-    for (var i = 0; i < numPixels; i++) {
-      p = this.drawPixel(p.neighbor(limb.direction));
-    }
+      this.drawPixel(limb);
   }, this);
 
   this.drawPixel(food);

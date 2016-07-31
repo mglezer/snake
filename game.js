@@ -4,6 +4,7 @@ function Game(width, height) {
   this.width = width;
   this.height = height;
   this.level = 1;
+  this.score = 0;
 
   // Set up the board
   var canvas = document.createElement("canvas");
@@ -12,7 +13,7 @@ function Game(width, height) {
   this.board = new Board(canvas, width, height);
 
   // assign the player a random position
-  this.snake = new Snake(this.randomPosition());
+  this.snake = new Snake(this.randomPosition(), defaultDirection);
 
   // assign the food a random position
   this.foodLocation = this.randomPosition();
@@ -24,36 +25,29 @@ Game.prototype.update = function(lastDirection) {
 
   var nextPixel = this.snake.getNextPixel(lastDirection);
 
-
+  // check if the snake has collided with a wall
   if (nextPixel.y === this.height ||
       nextPixel.y === -1 ||
       nextPixel.x === this.width ||
       nextPixel.x === -1) {
-        return true;
-      }
-
-
-  if (this.snake.getNextPixel(lastDirection).equals(this.foodLocation)) {
-    console.warn("**hit a food source!!!");
-    isGrowing = true;
-
-    this.foodLocation = this.randomPosition();
-    console.warn("**new location for food: ", this.foodLocation);
-
-    this.level++;
-    console.warn("**new level: ", this.level);
-
+      return true;
   }
-  // move the snake in the appropriate direction
-  this.snake.move(lastDirection, isGrowing);
 
-
-
-  // check if the snake has collided with a wall
+  // check if snake has collided with itself
+  if (this.snake.willTouch(nextPixel)) {
+    return true;
+  }
 
   // check if the snake has collided with food
+  if (this.snake.getNextPixel(lastDirection).equals(this.foodLocation)) {
+    isGrowing = true;
+    this.foodLocation = this.randomPosition();
+    this.score += this.level;
+    this.level++;
+  }
 
-  console.log("**new snake: ", this.snake);
+  // move the snake in the appropriate direction
+  this.snake.move(lastDirection, isGrowing);
 
   // refresh the Board
   this.board.redraw(this.snake, this.foodLocation);
